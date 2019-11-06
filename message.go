@@ -8,7 +8,7 @@ import (
 
 type MessageHeaders map[string]interface{}
 
-type Messsage struct {
+type Message struct {
 	// Application or exchange specific fields,
 	// the headers exchange will inspect this field.
 	Headers MessageHeaders
@@ -31,7 +31,7 @@ type Messsage struct {
 	Body []byte
 }
 
-func (msg Messsage) AmqpPublishing() amqp.Publishing {
+func (msg Message) AmqpPublishing() amqp.Publishing {
 	return amqp.Publishing{
 		Headers:         amqp.Table(msg.Headers),
 		ContentType:     msg.ContentType,
