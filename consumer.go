@@ -16,7 +16,7 @@ type Comsumer struct {
 	comsumer *cony.Consumer
 }
 
-func NewComsumer(cfg Config, exchange, kind, key, queue string, msgCh <-chan Delivery) (*Comsumer, error) {
+func NewComsumer(cfg Config, exchange, kind, key, queue string, msgCh chan<- Delivery) (*Comsumer, error) {
 	comsumer := Comsumer{
 		config:   cfg,
 		exchange: exchange,
@@ -32,7 +32,7 @@ func NewComsumer(cfg Config, exchange, kind, key, queue string, msgCh <-chan Del
 		cony.Backoff(cony.DefaultBackoff),
 	)
 
-	que := cony.Queue{
+	que := &cony.Queue{
 		AutoDelete: false,
 		Name:       queue,
 	}
