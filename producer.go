@@ -15,7 +15,7 @@ type Producer struct {
 	publisher *cony.Publisher
 }
 
-func (p Producer) Publish(msg Messsage) error {
+func (p Producer) Publish(msg Message) error {
 	if p.publisher == nil {
 		return errors.New("amqp客户端不存在")
 	}
