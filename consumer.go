@@ -68,6 +68,7 @@ func NewComsumer(cfg Config, exchange, kind, key, queue string, msgCh chan<- Del
 		for cli.Loop() {
 			select {
 			case msg := <-cns.Deliveries():
+				log.Printf("Received body: %q\n", msg.Body)
 				msgCh <- Delivery(msg)
 
 				log.Printf("Received body: %q\n", msg.Body)
