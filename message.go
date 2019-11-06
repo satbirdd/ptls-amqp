@@ -6,12 +6,14 @@ import (
 	"github.com/streadway/amqp"
 )
 
-type MessageHeaders map[string]interface{}
+type Delivery amqp.Delivery
 
-type Message struct {
+type Headers map[string]interface{}
+
+type Publishing struct {
 	// Application or exchange specific fields,
 	// the headers exchange will inspect this field.
-	Headers MessageHeaders
+	Headers Headers
 
 	// Properties
 	ContentType     string    // MIME content type
@@ -31,7 +33,7 @@ type Message struct {
 	Body []byte
 }
 
-func (msg Message) AmqpPublishing() amqp.Publishing {
+func (msg Publishing) AmqpPublishing() amqp.Publishing {
 	return amqp.Publishing{
 		Headers:         amqp.Table(msg.Headers),
 		ContentType:     msg.ContentType,

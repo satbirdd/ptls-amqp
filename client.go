@@ -9,6 +9,11 @@ const (
 	KeyUploadToLandon = "uploadToLandon"
 	KeyLog            = "log"
 
+	ExchangeKindDirect = "direct"
+	ExchangeKindTopic  = "topic"
+	ExchangeKindFanout = "fanout"
+	ExchangeKindHeader = "header"
+
 	AmqpUrlFmt = "amqp://%v:%v@%v%v"
 )
 
