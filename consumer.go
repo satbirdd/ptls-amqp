@@ -2,7 +2,6 @@ package ptls_amqp
 
 import (
 	"fmt"
-	"log"
 
 	"github.com/assembla/cony"
 )
@@ -61,6 +60,7 @@ func NewComsumer(cfg Config, exchange, kind, key, queue string, msgCh chan<- Del
 		que,
 	)
 	comsumer.comsumer = cns
+	cli.Consume(cns)
 
 	// Client loop sends out declarations(exchanges, queues, bindings
 	// etc) to the AMQP server. It also handles reconnecting.
@@ -68,10 +68,10 @@ func NewComsumer(cfg Config, exchange, kind, key, queue string, msgCh chan<- Del
 		for cli.Loop() {
 			select {
 			case msg := <-cns.Deliveries():
-				log.Printf("Received body: %q\n", msg.Body)
+				// log.Printf("Received body: %q\n", msg.Body)
 				msgCh <- Delivery(msg)
 
-				log.Printf("Received body: %q\n", msg.Body)
+				// log.Printf("Received body: %q\n", msg.Body)
 			case err := <-cns.Errors():
 				fmt.Printf("Consumer error: %v\n", err)
 			case err := <-cli.Errors():
