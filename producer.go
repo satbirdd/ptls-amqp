@@ -24,7 +24,7 @@ func (p Producer) Publish(msg Publishing) error {
 }
 
 func NewProducer(cfg Config, exchange, kind, key string) (*Producer, error) {
-	prod := Producer{
+	pdcer := Producer{
 		config:   cfg,
 		exchange: exchange,
 		kind:     kind,
@@ -52,7 +52,7 @@ func NewProducer(cfg Config, exchange, kind, key string) (*Producer, error) {
 	// with the cony client
 	pbl := cony.NewPublisher(exc.Name, key)
 	cli.Publish(pbl)
-	prod.publisher = pbl
+	pdcer.publisher = pbl
 
 	// Client loop sends out declarations(exchanges, queues, bindings
 	// etc) to the AMQP server. It also handles reconnecting.
@@ -67,5 +67,5 @@ func NewProducer(cfg Config, exchange, kind, key string) (*Producer, error) {
 		}
 	}()
 
-	return &prod, nil
+	return &pdcer, nil
 }

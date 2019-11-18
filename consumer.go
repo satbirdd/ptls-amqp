@@ -9,7 +9,7 @@ import (
 type Comsumer struct {
 	config   Config
 	exchange string
-	kind     string
+	kind     string // 交换器类型　direct, topic, fanout, headers,
 	key      string
 	queue    string
 	comsumer *cony.Consumer
@@ -32,14 +32,16 @@ func NewComsumer(cfg Config, exchange, kind, key, queue string, msgCh chan<- Del
 	)
 
 	que := &cony.Queue{
-		AutoDelete: false,
+		Durable:    true,
 		Name:       queue,
+		AutoDelete: false,
 	}
 
 	// Declare the exchange we'll be using
 	exc := cony.Exchange{
 		Name:       exchange,
 		Kind:       kind,
+		Durable:    true,
 		AutoDelete: false,
 	}
 
