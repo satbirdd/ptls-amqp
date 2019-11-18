@@ -43,6 +43,7 @@ func NewProducer(cfg Config, exchange, kind, key string) (*Producer, error) {
 		Name:       exchange,
 		Kind:       kind,
 		AutoDelete: false,
+		Durable:    true,
 	}
 	cli.Declare([]cony.Declaration{
 		cony.DeclareExchange(exc),
