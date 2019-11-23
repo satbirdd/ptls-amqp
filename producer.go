@@ -4,7 +4,8 @@ import (
 	"errors"
 	"log"
 
-	"github.com/assembla/cony"
+	"github.com/satbirdd/cony"
+	"github.com/streadway/amqp"
 )
 
 type Producer struct {
@@ -13,6 +14,8 @@ type Producer struct {
 	kind      string
 	key       string
 	publisher *cony.Publisher
+	confirmCh chan amqp.Confirmation
+	returnCh  chan amqp.Return
 }
 
 func (p Producer) Publish(msg Publishing) error {
@@ -23,12 +26,14 @@ func (p Producer) Publish(msg Publishing) error {
 	return p.publisher.Publish(msg.AmqpPublishing())
 }
 
-func NewProducer(cfg Config, exchange, kind, key string) (*Producer, error) {
+func NewProducer(cfg Config, exchange, kind, key string, confirmCh chan amqp.Confirmation, returnCh chan amqp.Return) (*Producer, error) {
 	pdcer := Producer{
-		config:   cfg,
-		exchange: exchange,
-		kind:     kind,
-		key:      key,
+		config:    cfg,
+		exchange:  exchange,
+		kind:      kind,
+		key:       key,
+		confirmCh: confirmCh,
+		returnCh:  returnCh,
 	}
 
 	url := cfg.String()
@@ -47,6 +52,9 @@ func NewProducer(cfg Config, exchange, kind, key string) (*Producer, error) {
 	}
 	cli.Declare([]cony.Declaration{
 		cony.DeclareExchange(exc),
+		cony.DeclareConfirm(false),
+		cony.DeclareNotifyReturn(pdcer.returnCh),
+		cony.DeclareNotifyPublish(pdcer.confirmCh),
 	})
 
 	// Declare and register a publisher

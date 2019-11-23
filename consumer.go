@@ -3,7 +3,7 @@ package ptls_amqp
 import (
 	"fmt"
 
-	"github.com/assembla/cony"
+	"github.com/satbirdd/cony"
 )
 
 type Comsumer struct {
