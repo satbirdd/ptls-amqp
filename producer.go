@@ -53,8 +53,8 @@ func NewProducer(cfg Config, exchange, kind, key string, confirmCh chan amqp.Con
 	cli.Declare([]cony.Declaration{
 		cony.DeclareExchange(exc),
 		cony.DeclareConfirm(false),
-		cony.DeclareNotifyReturn(pdcer.returnCh),
-		cony.DeclareNotifyPublish(pdcer.confirmCh),
+		cony.DeclareNotifyReturn(returnCh),
+		cony.DeclareNotifyPublish(confirmCh),
 	})
 
 	// Declare and register a publisher
