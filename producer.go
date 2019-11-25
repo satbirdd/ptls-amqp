@@ -26,7 +26,7 @@ func (p Producer) Publish(msg Publishing) error {
 	return p.publisher.Publish(msg.AmqpPublishing())
 }
 
-func NewProducer(cfg Config, exchange, kind, key string, confirmCh chan amqp.Confirmation, returnCh chan amqp.Return) (*Producer, error) {
+func NewProducer(cfg Config, exchange, kind, key string, confirm bool, confirmCh chan amqp.Confirmation, returnCh chan amqp.Return) (*Producer, error) {
 	pdcer := Producer{
 		config:    cfg,
 		exchange:  exchange,
@@ -52,10 +52,23 @@ func NewProducer(cfg Config, exchange, kind, key string, confirmCh chan amqp.Con
 	}
 	cli.Declare([]cony.Declaration{
 		cony.DeclareExchange(exc),
-		cony.DeclareConfirm(false),
-		cony.DeclareNotifyReturn(returnCh),
-		cony.DeclareNotifyPublish(confirmCh),
 	})
+
+	if confirm {
+		declares := []cony.Declaration{
+			cony.DeclareConfirm(false),
+		}
+
+		if returnCh != nil {
+			declares = append(declares, cony.DeclareNotifyReturn(returnCh))
+		}
+
+		if confirmCh != nil {
+			declares = append(declares, cony.DeclareNotifyPublish(confirmCh))
+		}
+
+		cli.PublishDeclare(declares)
+	}
 
 	// Declare and register a publisher
 	// with the cony client
